@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include "Board.h"
+#include "Pong.h"
 
 Board::Board(sf::RenderWindow& window) : window(window)
 {
@@ -186,8 +187,12 @@ bool Board::validateMove(int startX, int startY, int endX, int endY)
 
 void Board::movePiece(int startX, int startY, int endX, int endY)
 {
+
 	if (validateMove(startX, startY, endX, endY))
 	{
+		Pong pongGame;
+		pongGame.run();
+
 		int curPiece = board[startX][startY];
 
 		board[startX][startY] = 0;
@@ -396,8 +401,6 @@ void Board::run()
 						isPieceSelected = false;
 						drawBoard();
 					}
-					
-
 				}
 			}
 		}
