@@ -33,6 +33,154 @@ Board::Board(sf::RenderWindow& window) : window(window)
 
 bool Board::validateMove(int startX, int startY, int endX, int endY)
 {
+	int curPiece = board[startX][startY];
+	int endPiece = board[endX][endY];
+	if (endPiece * curPiece > 0) // Checks to make sure we arent taking a piece of the same colour
+	{
+		return false;
+	}
+
+	if (curPiece == 6) // White Pawn
+	{
+		std::cout << "Start: " << startX << "," << startY << "End: " << endX << "," << endY << std::endl;
+		int xdif = endX - startX;
+		int ydif = endY - startY;
+		std::cout << "ValidateMove: " << xdif << "," << ydif << std::endl;
+		if (xdif == -1 && ydif == 0)
+		{
+			return true;
+		}
+		else if (xdif == -1 && (ydif == 1 || ydif == -1) and endPiece != 0)
+		{
+			return true;
+		}
+		else if (xdif == -2 && ydif == 0 && startX == 6) {
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if (curPiece == -6) // Black Pawn
+	{
+		std::cout << "Start: " << startX << "," << startY << "End: " << endX << "," << endY << std::endl;
+		int xdif = endX - startX;
+		int ydif = endY - startY;
+		std::cout << "ValidateMove: " << xdif << "," << ydif << std::endl;
+		if (xdif == 1 && ydif == 0)
+		{
+			return true;
+		}
+		else if (xdif == 1 && (ydif == 1 || ydif == -1) and endPiece != 0)
+		{
+			return true;
+		}
+		else if (xdif == 2 && ydif == 0 && startX == 1) {
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+	else if (abs(curPiece) == 1) // Rook
+	{
+		std::cout << "Start: " << startX << "," << startY << "End: " << endX << "," << endY << std::endl;
+		int xdif = endX - startX;
+		int ydif = endY - startY;
+		std::cout << "ValidateMove: " << xdif << "," << ydif << std::endl;
+		if (xdif != 0 && ydif == 0)
+		{
+			return true;
+		}
+		else if (xdif == 0 && ydif!=0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+	else if (abs(curPiece) == 3) // Bishop
+	{
+		std::cout << "Start: " << startX << "," << startY << "End: " << endX << "," << endY << std::endl;
+		int xdif = endX - startX;
+		int ydif = endY - startY;
+		std::cout << "ValidateMove: " << xdif << "," << ydif << std::endl;
+		if (abs(xdif) == abs(ydif))
+		{
+			return true;
+		}
+		//else if (xdif == 0 && ydif != 0)
+		//{
+		//	return true;
+		//}
+		else
+		{
+			return false;
+		}
+
+	}
+	else if (abs(curPiece) == 2) // Knight
+	{
+		std::cout << "Start: " << startX << "," << startY << "End: " << endX << "," << endY << std::endl;
+		int xdif = endX - startX;
+		int ydif = endY - startY;
+		std::cout << "ValidateMove: " << xdif << "," << ydif << std::endl;
+		if (abs(xdif) == 1 && abs(ydif) == 2 || abs(xdif) == 2 && abs(ydif) == 1)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+
+	}
+	else if (abs(curPiece) == 4) // Queen
+	{
+		std::cout << "Start: " << startX << "," << startY << "End: " << endX << "," << endY << std::endl;
+		int xdif = endX - startX;
+		int ydif = endY - startY;
+		std::cout << "ValidateMove: " << xdif << "," << ydif << std::endl;
+		if (abs(xdif) == abs(ydif))
+		{
+			return true;
+		}
+		else if (xdif != 0 && ydif == 0)
+		{
+			return true;
+		}
+		else if (xdif == 0 && ydif != 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if (abs(curPiece) == 2) // Knight
+	{
+		std::cout << "Start: " << startX << "," << startY << "End: " << endX << "," << endY << std::endl;
+		int xdif = endX - startX;
+		int ydif = endY - startY;
+		std::cout << "ValidateMove: " << xdif << "," << ydif << std::endl;
+		if (abs(xdif) == 1 && abs(ydif) == 1 || abs(xdif) == 1 && abs(ydif) == 0 || abs(xdif) == 0 && abs(ydif) == 1)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+
 	return true;
 }
 
@@ -47,6 +195,10 @@ void Board::movePiece(int startX, int startY, int endX, int endY)
 		pieces[startX][startY].setPosition(endX * squareSize, endY * squareSize);
 		pieces[endX][endY] = pieces[startX][startY];
 		pieces[startX][startY] = Piece(PieceType::NONE);
+	}
+	else
+	{
+		std::cout << "Not validated" << std::endl;
 	}
 
 }
@@ -233,11 +385,11 @@ void Board::run()
 					if (destX != selectedX || destY != selectedY) //Making sure if no move is made turn isnt switched
 					{
 						Board::movePiece(selectedX, selectedY, destX, destY);
-						if (currentPlayer == Colour::WHITE)
+						if (currentPlayer == Colour::WHITE && validateMove(selectedX, selectedY, destX, destY))
 						{
 							currentPlayer = Colour::BLACK;
 						}
-						else
+						else if(currentPlayer == Colour::BLACK && validateMove(selectedX, selectedY, destX, destY))
 						{
 							currentPlayer = Colour::WHITE;
 						}
